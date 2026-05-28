@@ -1,0 +1,226 @@
+/* =============================================================
+   results.css
+   Post-test screen (spec §5). The hero numbers are the moment —
+   Fraunces serif at huge size, so a finished test feels like
+   a completed editorial page rather than a dashboard widget.
+   ============================================================= */
+
+.results-view {
+  /* Override the centered flex from main.css to use top-alignment
+     since the results have more content than fits centered. */
+  justify-content: flex-start;
+  padding-top: var(--space-5);
+  padding-bottom: var(--space-5);
+}
+
+/* -------------------------------------------------------------
+   1. Hero metrics — Net WPM and Accuracy, side by side
+   ------------------------------------------------------------- */
+.results-hero {
+  display: flex;
+  align-items: baseline;
+  justify-content: flex-start;
+  gap: var(--space-10);
+  width: 100%;
+  max-width: 1100px;
+  margin-bottom: var(--space-5);
+}
+
+.results-metric {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-1);
+}
+
+.results-metric-label {
+  font-family: var(--font-mono);
+  font-size: var(--size-sm);
+  font-weight: 400;
+  color: var(--sub);
+  letter-spacing: 0.08em;
+  text-transform: lowercase;
+}
+
+.results-metric-value {
+  font-family: var(--font-display);
+  font-weight: 300;
+  font-size: var(--size-3xl);     /* 5rem / 80px */
+  line-height: 0.95;
+  color: var(--accent);
+  letter-spacing: -0.03em;
+  font-variant-numeric: tabular-nums;
+  /* The serif feature settings give Fraunces a more confident
+     editorial look at large sizes. */
+  font-feature-settings: "ss01" 1, "lnum" 1;
+}
+
+/* The accuracy metric reads as secondary — desaturate slightly */
+.results-metric:nth-child(2) .results-metric-value {
+  color: var(--text);
+}
+
+/* -------------------------------------------------------------
+   2. Chart container
+   ------------------------------------------------------------- */
+.results-chart-wrap {
+  position: relative;
+  width: 100%;
+  max-width: 1100px;
+  height: 240px;
+  margin-bottom: var(--space-6);
+  padding: var(--space-3) 0;
+}
+
+/* Chart.js sizes the canvas to fill its parent when
+   maintainAspectRatio: false, which is set in ui/chart.js. */
+#wpm-chart {
+  width: 100% !important;
+  height: 100% !important;
+}
+
+/* -------------------------------------------------------------
+   3. Secondary stats — context, pool, character breakdown
+   ------------------------------------------------------------- */
+.results-secondary {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: var(--space-5) var(--space-6);
+  width: 100%;
+  max-width: 1100px;
+  margin-bottom: var(--space-6);
+  padding-top: var(--space-5);
+  border-top: 1px solid var(--sub-alt);
+}
+
+.results-stat {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-1);
+}
+
+.results-stat-label {
+  font-family: var(--font-mono);
+  font-size: var(--size-xs);
+  color: var(--sub);
+  letter-spacing: 0.08em;
+  text-transform: lowercase;
+}
+
+.results-stat-value {
+  font-family: var(--font-mono);
+  font-size: var(--size-lg);
+  font-weight: 400;
+  color: var(--text);
+  letter-spacing: -0.01em;
+  font-variant-numeric: tabular-nums;
+}
+
+.results-stat-sub {
+  font-family: var(--font-mono);
+  font-size: var(--size-xs);
+  color: var(--sub);
+  opacity: 0.75;
+  letter-spacing: 0.02em;
+  /* Sits below the value as an explanatory caption */
+  margin-top: var(--space-1);
+}
+
+/* -------------------------------------------------------------
+   4. "new test" button — the dominant call-to-action
+   ------------------------------------------------------------- */
+.restart-btn--results {
+  align-self: flex-start;
+  margin-top: var(--space-2);
+  padding: var(--space-3) var(--space-5);
+  font-family: var(--font-mono);
+  font-size: var(--size-sm);
+  letter-spacing: 0.04em;
+  color: var(--text);
+  background-color: var(--sub-alt);
+  border-radius: 5px;
+  transition:
+    color var(--dur-fast) var(--ease-out),
+    background-color var(--dur-fast) var(--ease-out),
+    transform 80ms var(--ease-out);
+}
+
+.restart-btn--results:hover {
+  color: var(--bg);
+  background-color: var(--accent);
+}
+
+.restart-btn--results svg {
+  transition: transform 300ms var(--ease-out);
+}
+
+.restart-btn--results:hover svg {
+  transform: rotate(-360deg);
+}
+
+/* -------------------------------------------------------------
+   5. Entrance animation — staggered fade-in for each section
+   Triggered by the results view becoming visible.
+   ------------------------------------------------------------- */
+.results-view:not(.is-fading) .results-hero {
+  animation: rise-fade 520ms var(--ease-out) both;
+}
+.results-view:not(.is-fading) .results-chart-wrap {
+  animation: rise-fade 520ms var(--ease-out) 120ms both;
+}
+.results-view:not(.is-fading) .results-secondary {
+  animation: rise-fade 520ms var(--ease-out) 240ms both;
+}
+.results-view:not(.is-fading) .restart-btn--results {
+  animation: rise-fade 520ms var(--ease-out) 340ms both;
+}
+
+@keyframes rise-fade {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* -------------------------------------------------------------
+   6. Responsive
+   ------------------------------------------------------------- */
+@media (max-width: 768px) {
+  .results-hero {
+    gap: var(--space-6);
+    flex-wrap: wrap;
+  }
+  .results-metric-value {
+    font-size: var(--size-2xl);   /* 3rem on mobile */
+  }
+  .results-chart-wrap {
+    height: 180px;
+  }
+  .results-secondary {
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-4);
+  }
+}
+
+@media (max-width: 420px) {
+  .results-secondary {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .results-view:not(.is-fading) .results-hero,
+  .results-view:not(.is-fading) .results-chart-wrap,
+  .results-view:not(.is-fading) .results-secondary,
+  .results-view:not(.is-fading) .restart-btn--results {
+    animation: none;
+  }
+  .restart-btn--results:hover svg {
+    transform: none;
+  }
+}

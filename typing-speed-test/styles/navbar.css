@@ -1,0 +1,177 @@
+/* =============================================================
+   navbar.css
+   Top navigation bar (spec §4.1). Controls stay low-contrast
+   until hovered or active, so the typing area gets full visual
+   priority. The brand mark is the single moment of editorial
+   flair — Fraunces serif against the otherwise-monospace UI.
+   ============================================================= */
+
+.navbar {
+  grid-row: 1 / 2;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-5);
+  width: 100%;
+}
+
+/* -------------------------------------------------------------
+   1. Brand mark — "type."
+   ------------------------------------------------------------- */
+.brand {
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: 1.625rem;
+  letter-spacing: -0.02em;
+  color: var(--text);
+  line-height: 1;
+  display: inline-flex;
+  align-items: baseline;
+  transition: color var(--dur-fast) var(--ease-out);
+}
+
+.brand:hover {
+  color: var(--accent);
+}
+
+.brand-dot {
+  color: var(--accent);
+  font-weight: 600;
+  /* The dot is the punctuation that gives the wordmark its character —
+     slight kerning back so it sits tight against "type". */
+  margin-left: -0.04em;
+}
+
+/* -------------------------------------------------------------
+   2. Controls cluster
+   ------------------------------------------------------------- */
+.navbar-controls {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  flex-wrap: wrap;
+}
+
+.control-group {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.control-divider {
+  display: inline-block;
+  width: 1px;
+  height: 18px;
+  background-color: var(--sub-alt);
+  margin: 0 var(--space-1);
+}
+
+/* -------------------------------------------------------------
+   3. Control buttons
+   Compact, all lowercase, low-contrast until hover/active.
+   ------------------------------------------------------------- */
+.control-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-3);
+  font-family: var(--font-mono);
+  font-size: var(--size-sm);
+  font-weight: 400;
+  color: var(--sub);
+  border-radius: 4px;
+  letter-spacing: 0.02em;
+  transition:
+    color var(--dur-fast) var(--ease-out),
+    background-color var(--dur-fast) var(--ease-out),
+    transform 80ms var(--ease-out);
+  white-space: nowrap;
+}
+
+.control-btn:hover {
+  color: var(--text);
+}
+
+.control-btn:active {
+  transform: scale(0.96);
+}
+
+.control-btn.is-active {
+  color: var(--accent);
+}
+
+.control-btn-icon {
+  font-size: 0.95em;
+  opacity: 0.85;
+  /* Slightly raised baseline so the symbol sits next to lowercase text */
+  position: relative;
+  top: -0.5px;
+}
+
+/* -------------------------------------------------------------
+   4. Theme picker (a native <select> styled to match)
+   ------------------------------------------------------------- */
+.theme-picker {
+  position: relative;
+}
+
+.control-select {
+  appearance: none;
+  -webkit-appearance: none;
+  padding: var(--space-2) var(--space-5) var(--space-2) var(--space-3);
+  font-family: var(--font-mono);
+  font-size: var(--size-sm);
+  color: var(--sub);
+  background-color: transparent;
+  border-radius: 4px;
+  letter-spacing: 0.02em;
+  cursor: pointer;
+  /* Custom chevron */
+  background-image: linear-gradient(45deg, transparent 50%, var(--sub) 50%),
+                    linear-gradient(135deg, var(--sub) 50%, transparent 50%);
+  background-position:
+    calc(100% - 14px) 50%,
+    calc(100% - 9px) 50%;
+  background-size: 5px 5px, 5px 5px;
+  background-repeat: no-repeat;
+  transition: color var(--dur-fast) var(--ease-out);
+}
+
+.control-select:hover {
+  color: var(--text);
+}
+
+.control-select option {
+  /* Native option styling — most browsers ignore most of this, but
+     the bg/color combo at least helps on Firefox. */
+  background-color: var(--bg-secondary);
+  color: var(--text);
+}
+
+/* -------------------------------------------------------------
+   5. Responsive — collapse to two rows on narrow screens
+   ------------------------------------------------------------- */
+@media (max-width: 768px) {
+  .navbar {
+    flex-direction: column;
+    align-items: flex-start;
+    padding-top: var(--space-3);
+    padding-bottom: var(--space-3);
+    gap: var(--space-3);
+  }
+  .navbar-controls {
+    width: 100%;
+    gap: var(--space-2);
+    font-size: var(--size-xs);
+  }
+  .control-btn {
+    padding: var(--space-1) var(--space-2);
+    font-size: var(--size-xs);
+  }
+  .control-divider {
+    display: none;
+  }
+  .brand {
+    font-size: 1.375rem;
+  }
+}

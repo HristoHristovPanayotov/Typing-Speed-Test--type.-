@@ -1,0 +1,97 @@
+/* =============================================================
+   themes.css
+   Color tokens only. Sizing, spacing, and motion live in main.css.
+   Switching themes = swapping the data-theme attribute on <html>.
+
+   Token contract (every theme MUST define all of these):
+     --bg            page background
+     --bg-secondary  raised surfaces (modals, dropdowns, key caps)
+     --text          primary text + correctly-typed letters
+     --sub           secondary text + untyped letters
+     --sub-alt       hairlines, gridlines, key outlines
+     --accent        signature color (caret, active state, chart line)
+     --accent-soft   semi-transparent accent for backgrounds
+     --error         incorrectly-typed letters
+     --error-extra   over-typed (extra) characters — darker than --error
+   ============================================================= */
+
+/* -------------------------------------------------------------
+   Default fallback — same values as charcoal so an element
+   without a data-theme attribute still renders reasonably.
+   ------------------------------------------------------------- */
+:root {
+  --bg:            #1d1c1a;
+  --bg-secondary:  #2a2826;
+  --text:          #e6dcc6;
+  --sub:           #7d7569;
+  --sub-alt:       #3a3733;
+  --accent:        #d4a056;
+  --accent-soft:   rgba(212, 160, 86, 0.12);
+  --error:         #d4625c;
+  --error-extra:   #7d3c39;
+}
+
+/* -------------------------------------------------------------
+   charcoal — warm dark. Default theme.
+   Inspired by Gruvbox: low-blue-light, easy on the eyes for
+   long typing sessions. Amber accent reads as warm/inviting.
+   ------------------------------------------------------------- */
+[data-theme="charcoal"] {
+  --bg:            #1d1c1a;
+  --bg-secondary:  #2a2826;
+  --text:          #e6dcc6;
+  --sub:           #7d7569;
+  --sub-alt:       #3a3733;
+  --accent:        #d4a056;
+  --accent-soft:   rgba(212, 160, 86, 0.12);
+  --error:         #d4625c;
+  --error-extra:   #7d3c39;
+}
+
+/* -------------------------------------------------------------
+   bone — warm light. Paper-and-ink feel.
+   Cream background, deep brown text, terracotta accent.
+   ------------------------------------------------------------- */
+[data-theme="bone"] {
+  --bg:            #ebe4d5;
+  --bg-secondary:  #ddd4be;
+  --text:          #2e2920;
+  --sub:           #8a8170;
+  --sub-alt:       #c8c0ac;
+  --accent:        #c0532a;
+  --accent-soft:   rgba(192, 83, 42, 0.10);
+  --error:         #a83c3c;
+  --error-extra:   #d4928e;
+}
+
+/* -------------------------------------------------------------
+   midnight — cool dark. Crisp and electric.
+   Near-black background, cool blue-white text, cyan accent.
+   ------------------------------------------------------------- */
+[data-theme="midnight"] {
+  --bg:            #0d1117;
+  --bg-secondary:  #161b22;
+  --text:          #c9d4e3;
+  --sub:           #5a6577;
+  --sub-alt:       #21262d;
+  --accent:        #58d4f0;
+  --accent-soft:   rgba(88, 212, 240, 0.10);
+  --error:         #f47878;
+  --error-extra:   #6b3a3a;
+}
+
+/* -------------------------------------------------------------
+   forest — earthy dark green. Muted and grounding.
+   Deep forest background, sage text, brass-gold accent.
+   ------------------------------------------------------------- */
+[data-theme="forest"] {
+  --bg:            #16221a;
+  --bg-secondary:  #1f2d23;
+  --text:          #c4d4b8;
+  --sub:           #6a7a5e;
+  --sub-alt:       #2a3a2d;
+  --accent:        #d4a64a;
+  --accent-soft:   rgba(212, 166, 74, 0.12);
+  --error:         #c95f3f;
+  --error-extra:   #6d3424;
+}

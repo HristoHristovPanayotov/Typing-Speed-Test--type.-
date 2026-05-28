@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="charcoal">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>type.</title>
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..900;1,9..144,300..900&family=JetBrains+Mono:ital,wght@0,300..800;1,300..800&display=swap"
+    rel="stylesheet"
+  />
+
+  <!-- Styles (order matters: themes first so variables exist before consumers) -->
+  <link rel="stylesheet" href="styles/themes.css" />
+  <link rel="stylesheet" href="styles/main.css" />
+  <link rel="stylesheet" href="styles/navbar.css" />
+  <link rel="stylesheet" href="styles/typing-area.css" />
+  <link rel="stylesheet" href="styles/letter-modal.css" />
+  <link rel="stylesheet" href="styles/keyboard.css" />
+  <link rel="stylesheet" href="styles/results.css" />
+
+  <!-- Chart.js for the WPM performance chart -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js" defer></script>
+</head>
+
+<body>
+  <div class="app">
+
+    <!-- ============================================== -->
+    <!-- NAVBAR                                         -->
+    <!-- ============================================== -->
+    <nav class="navbar" aria-label="Test settings">
+      <a class="brand" href="#" aria-label="type. home">type<span class="brand-dot">.</span></a>
+
+      <div class="navbar-controls">
+        <!-- Mode group: time vs words -->
+        <div class="control-group" role="radiogroup" aria-label="Test mode">
+          <button class="control-btn is-active" data-mode="time" role="radio" aria-checked="true">time</button>
+          <button class="control-btn" data-mode="words" role="radio" aria-checked="false">words</button>
+        </div>
+
+        <span class="control-divider" aria-hidden="true"></span>
+
+        <!-- Quota group: depends on mode -->
+        <div class="control-group" id="quota-group" role="radiogroup" aria-label="Test length">
+          <button class="control-btn" data-quota="15">15</button>
+          <button class="control-btn is-active" data-quota="30" aria-checked="true">30</button>
+          <button class="control-btn" data-quota="60">60</button>
+          <button class="control-btn" data-quota="120">120</button>
+        </div>
+
+        <span class="control-divider" aria-hidden="true"></span>
+
+        <!-- Letter pool trigger -->
+        <button class="control-btn" id="open-letter-modal" aria-haspopup="dialog">
+          <span class="control-btn-icon" aria-hidden="true">⌨</span>
+          letters
+        </button>
+
+        <!-- Virtual keyboard toggle -->
+        <button class="control-btn" id="toggle-keyboard" aria-pressed="false">
+          <span class="control-btn-icon" aria-hidden="true">▦</span>
+          keyboard
+        </button>
+
+        <!-- Theme dropdown -->
+        <div class="control-group theme-picker">
+          <label for="theme-select" class="visually-hidden">Theme</label>
+          <select id="theme-select" class="control-select">
+            <option value="charcoal">charcoal</option>
+            <option value="bone">bone</option>
+            <option value="midnight">midnight</option>
+            <option value="forest">forest</option>
+          </select>
+        </div>
+      </div>
+    </nav>
+
+    <!-- ============================================== -->
+    <!-- TYPING VIEW (main test interface)              -->
+    <!-- ============================================== -->
+    <main class="typing-view" id="typing-view">
+      <!-- Live test status: timer or word count, plus current letter pool -->
+      <div class="test-meta" aria-live="polite">
+        <span class="test-meta-primary" id="test-meta-primary">30</span>
+        <span class="test-meta-secondary" id="test-meta-secondary">a&middot;e&middot;i&middot;o&middot;u</span>
+      </div>
+
+      <!-- The actual words display -->
+      <div class="typing-area" id="typing-area" tabindex="0" aria-label="Typing area">
+        <div class="words" id="words"></div>
+        <div class="caret" id="caret" aria-hidden="true"></div>
+      </div>
+
+      <!-- Restart affordance -->
+      <button class="restart-btn" id="restart-btn" aria-label="Restart test (Tab + Enter)">
+        <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true">
+          <path fill="currentColor" d="M12 5V2L7 6l5 4V7c3.3 0 6 2.7 6 6s-2.7 6-6 6-6-2.7-6-6H4c0 4.4 3.6 8 8 8s8-3.6 8-8-3.6-8-8-8z"/>
+        </svg>
+      </button>
+    </main>
+
+    <!-- ============================================== -->
+    <!-- RESULTS VIEW (hidden until test completes)     -->
+    <!-- ============================================== -->
+    <section class="results-view" id="results-view" hidden aria-label="Test results">
+      <div class="results-hero">
+        <div class="results-metric results-metric--primary">
+          <span class="results-metric-label">wpm</span>
+          <span class="results-metric-value" id="result-wpm">—</span>
+        </div>
+        <div class="results-metric results-metric--primary">
+          <span class="results-metric-label">acc</span>
+          <span class="results-metric-value" id="result-acc">—</span>
+        </div>
+      </div>
+
+      <div class="results-chart-wrap">
+        <canvas id="wpm-chart" aria-label="Net WPM over time"></canvas>
+      </div>
+
+      <div class="results-secondary">
+        <div class="results-stat">
+          <span class="results-stat-label">test type</span>
+          <span class="results-stat-value" id="result-context">time 30</span>
+        </div>
+        <div class="results-stat">
+          <span class="results-stat-label">letter pool</span>
+          <span class="results-stat-value" id="result-pool">—</span>
+        </div>
+        <div class="results-stat">
+          <span class="results-stat-label">characters</span>
+          <span class="results-stat-value" id="result-chars">—</span>
+          <span class="results-stat-sub">correct / incorrect / extra / missed</span>
+        </div>
+        <div class="results-stat">
+          <span class="results-stat-label">raw wpm</span>
+          <span class="results-stat-value" id="result-raw">—</span>
+        </div>
+      </div>
+
+      <button class="restart-btn restart-btn--results" id="restart-btn-results" aria-label="New test">
+        <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true">
+          <path fill="currentColor" d="M12 5V2L7 6l5 4V7c3.3 0 6 2.7 6 6s-2.7 6-6 6-6-2.7-6-6H4c0 4.4 3.6 8 8 8s8-3.6 8-8-3.6-8-8-8z"/>
+        </svg>
+        <span>new test</span>
+      </button>
+    </section>
+
+    <!-- ============================================== -->
+    <!-- VIRTUAL KEYBOARD (toggleable, populated by JS) -->
+    <!-- ============================================== -->
+    <div class="virtual-keyboard" id="virtual-keyboard" hidden aria-hidden="true">
+      <!-- Rows are built dynamically by ui/keyboard.js -->
+    </div>
+
+    <!-- ============================================== -->
+    <!-- FOOTER                                         -->
+    <!-- ============================================== -->
+    <footer class="footer">
+      <div class="footer-left">
+        <span class="footer-hint"><kbd>tab</kbd> + <kbd>enter</kbd> &mdash; restart</span>
+        <span class="footer-hint"><kbd>esc</kbd> &mdash; close modal</span>
+      </div>
+      <div class="footer-right">
+        <span class="footer-version">v0.1</span>
+      </div>
+    </footer>
+
+    <!-- ============================================== -->
+    <!-- LETTER FILTER MODAL (built by ui/letter-modal.js) -->
+    <!-- Container is empty; the JS module owns its DOM. -->
+    <!-- ============================================== -->
+    <div class="modal-backdrop" id="letter-modal" hidden role="dialog" aria-modal="true" aria-label="Letter pool"></div>
+
+  </div>
+
+  <!-- Entry point. Everything else is imported from here. -->
+  <script type="module" src="scripts/main.js"></script>
+</body>
+</html>

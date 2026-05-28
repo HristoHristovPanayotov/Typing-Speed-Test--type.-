@@ -1,0 +1,189 @@
+/* =============================================================
+   typing-area.css
+   ============================================================= */
+
+/* -------------------------------------------------------------
+   1. Meta strip
+   ------------------------------------------------------------- */
+.test-meta {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-1);
+  width: 100%;
+  max-width: 1100px;
+  min-height: 3rem;
+  color: var(--accent);
+  font-variant-numeric: tabular-nums;
+  opacity: 0.95;
+}
+
+.test-meta-primary {
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: var(--size-xl);
+  line-height: 1;
+  letter-spacing: -0.01em;
+}
+
+.test-meta-secondary {
+  color: var(--sub);
+  font-size: var(--size-xs);
+  letter-spacing: 0.05em;
+  text-transform: lowercase;
+}
+
+/* -------------------------------------------------------------
+   2. Typing area
+   ------------------------------------------------------------- */
+.typing-area {
+  position: relative;
+  width: 100%;
+  max-width: 1100px;
+  height: calc(var(--size-words) * 1.55 * 3);
+  overflow: hidden;
+  cursor: text;
+  outline: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Gradient — was 30%, now 12% so the coming words stay readable.
+   A cubic-bezier ease means the fade only kicks in at the very
+   last sliver, leaving the third line almost fully visible. */
+.typing-area::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 12%;
+  pointer-events: none;
+  background: linear-gradient(
+    to bottom,
+    transparent 0%,
+    transparent 30%,
+    var(--bg) 100%
+  );
+}
+
+/* -------------------------------------------------------------
+   3. Words list
+   ------------------------------------------------------------- */
+.words {
+  /* position: relative so the caret (inside .words) is anchored
+     to this element, not to .typing-area. This is the fix for
+     the caret drifting a line down on scroll. */
+  position: relative;
+  display: flex;
+  flex-wrap: wrap;
+  font-family: var(--font-mono);
+  font-size: var(--size-words);
+  font-weight: 400;
+  line-height: 1.55;
+  color: var(--sub);
+  will-change: transform;
+  transition: transform 180ms var(--ease-out);
+}
+
+.word {
+  position: relative;
+  display: inline-flex;
+  margin-right: 0.65em;
+  white-space: nowrap;
+}
+
+.word.has-errors {
+  text-decoration: underline dashed var(--error);
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.18em;
+}
+
+/* -------------------------------------------------------------
+   4. Letters
+   ------------------------------------------------------------- */
+.letter {
+  display: inline-block;
+  color: var(--sub);
+  transition: color var(--dur-fast) linear;
+}
+
+.letter.is-correct {
+  color: var(--text);
+}
+
+.letter.is-incorrect {
+  color: var(--error);
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.18em;
+}
+
+.letter.is-extra {
+  color: var(--error-extra);
+  opacity: 0.9;
+}
+
+/* -------------------------------------------------------------
+   5. Caret
+   Now lives inside .words — inherits translateY scroll.
+   ------------------------------------------------------------- */
+.caret {
+  position: absolute;
+  width: 2px;
+  background-color: var(--accent);
+  border-radius: 1px;
+  pointer-events: none;
+  will-change: left, top, height;
+  transition:
+    left   90ms var(--ease-out),
+    top    90ms var(--ease-out),
+    height 90ms var(--ease-out),
+    opacity 200ms ease;
+  animation: caret-pulse 1.2s ease-in-out infinite;
+}
+
+@keyframes caret-pulse {
+  0%, 35%   { opacity: 1; }
+  65%, 100% { opacity: 0.2; }
+}
+
+/* -------------------------------------------------------------
+   6. Empty state
+   ------------------------------------------------------------- */
+.words-empty {
+  width: 100%;
+  padding: var(--space-6) 0;
+  color: var(--sub);
+  font-size: var(--size-md);
+  font-style: italic;
+  text-align: center;
+  letter-spacing: 0.02em;
+}
+
+/* -------------------------------------------------------------
+   7. Responsive
+   ------------------------------------------------------------- */
+@media (max-width: 768px) {
+  .typing-area {
+    height: calc(var(--size-words) * 1.6 * 3);
+  }
+  .words {
+    line-height: 1.6;
+  }
+  .word {
+    margin-right: 0.5em;
+  }
+  .test-meta-primary {
+    font-size: var(--size-lg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .caret {
+    animation: none;
+    transition: none;
+  }
+  .words {
+    transition: none;
+  }
+}

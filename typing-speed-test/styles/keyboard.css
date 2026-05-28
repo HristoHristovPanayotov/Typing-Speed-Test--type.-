@@ -1,0 +1,118 @@
+/* =============================================================
+   keyboard.css
+   The optional virtual keyboard (spec §4.4). Sits below the
+   typing area in the layout flow; toggleable via the navbar.
+   Rows are staggered to mirror a real QWERTY board.
+
+   Key sizing is driven by a single --key-size custom property
+   so we can scale the whole thing for different breakpoints
+   without touching individual rules.
+   ============================================================= */
+
+.virtual-keyboard {
+  --key-size: 2.5rem;
+  --key-gap:  0.35rem;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--key-gap);
+  margin-top: var(--space-5);
+  padding: var(--space-3) 0;
+  user-select: none;
+  pointer-events: none; /* visual mirror only; not clickable */
+}
+
+/* -------------------------------------------------------------
+   1. Rows + QWERTY stagger
+   The real-keyboard offsets (approx, in key-size units):
+     row 1 (qwerty):  0
+     row 2 (asdf):    0.25 keys to the right
+     row 3 (zxcv):    0.75 keys to the right
+   ------------------------------------------------------------- */
+.vkb-row {
+  display: flex;
+  gap: var(--key-gap);
+}
+
+.vkb-row:nth-child(2) {
+  margin-left: calc(var(--key-size) * 0.25 + var(--key-gap) * 0.5);
+}
+
+.vkb-row:nth-child(3) {
+  margin-left: calc(var(--key-size) * 0.75 + var(--key-gap) * 1.5);
+}
+
+/* -------------------------------------------------------------
+   2. Key caps
+   ------------------------------------------------------------- */
+.vkb-key {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--key-size);
+  height: var(--key-size);
+  font-family: var(--font-mono);
+  font-size: var(--size-sm);
+  color: var(--sub);
+  background-color: var(--bg-secondary);
+  border: 1px solid var(--sub-alt);
+  border-radius: 5px;
+  text-transform: lowercase;
+  /* Subtle inner highlight to suggest a key cap */
+  box-shadow:
+    inset 0 -2px 0 var(--sub-alt),
+    inset 0 1px 0 rgba(255, 255, 255, 0.02);
+  transition:
+    color 60ms var(--ease-out),
+    background-color 60ms var(--ease-out),
+    border-color 60ms var(--ease-out),
+    transform 60ms var(--ease-out),
+    box-shadow 60ms var(--ease-out);
+}
+
+.vkb-key--space {
+  width: calc(var(--key-size) * 8);
+}
+
+/* -------------------------------------------------------------
+   3. Pressed state — flashes to accent color on physical keypress
+   ------------------------------------------------------------- */
+.vkb-key.is-pressed {
+  color: var(--bg);
+  background-color: var(--accent);
+  border-color: var(--accent);
+  transform: translateY(1px);
+  box-shadow:
+    inset 0 0 0 var(--accent),
+    0 0 12px var(--accent-soft);
+}
+
+/* -------------------------------------------------------------
+   4. Responsive scaling
+   ------------------------------------------------------------- */
+@media (max-width: 768px) {
+  .virtual-keyboard {
+    --key-size: 1.85rem;
+    --key-gap:  0.25rem;
+    margin-top: var(--space-4);
+  }
+  .vkb-key {
+    font-size: var(--size-xs);
+  }
+}
+
+@media (max-width: 420px) {
+  .virtual-keyboard {
+    --key-size: 1.55rem;
+    --key-gap:  0.2rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .vkb-key,
+  .vkb-key.is-pressed {
+    transition: none;
+    transform: none;
+  }
+}
